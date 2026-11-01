@@ -1,12 +1,269 @@
-Smart-Library-Tracker/
-│
-├── app.py
-├── books.csv
-├── requirements.txt
-│
-├── templates/
-│   └── index.html
-│
-└── static/
-    └── style.css
-    
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Library Tracker</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <nav>
+        <a href="/" class="logo">✦ Page<span>Wise</span></a>
+        <small>YOUR PERSONAL LIBRARY SPACE</small>
+    </nav>
+
+    <main>
+
+        <!-- Hero Section -->
+        <header class="hero">
+            <div>
+                <p class="eyebrow">THE SMART LIBRARY TRACKER</p>
+                <h1>A little more<br><i>room to read.</i></h1>
+                <p>
+                    Organise your collection, discover your next read,
+                    and keep every book accounted for.
+                </p>
+            </div>
+
+            <div class="art">
+                <b></b>
+                <b></b>
+                <b></b>
+                <span>✳</span>
+            </div>
+        </header>
+
+        <!-- Notifications -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="flash {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+
+        <!-- Statistics -->
+        <section class="stats">
+
+            <article>
+                <small>BOOK TITLES</small>
+                <strong>{{ stats.titles }}</strong>
+                <span>Different titles</span>
+            </article>
+
+            <article>
+                <small>TOTAL COPIES</small>
+                <strong>{{ stats.copies }}</strong>
+                <span>Across your shelves</span>
+            </article>
+
+            <article>
+                <small>AVAILABLE</small>
+                <strong>{{ stats.available }}</strong>
+                <span>Ready to borrow</span>
+            </article>
+
+            <article class="highlight">
+                <small>ISSUED</small>
+                <strong>{{ stats.issued }}</strong>
+                <span>Currently on loan</span>
+            </article>
+
+        </section>
+
+        <!-- Book Collection -->
+        <div class="section">
+            <div>
+                <p class="eyebrow">YOUR COLLECTION</p>
+                <h2>Find your next chapter</h2>
+            </div>
+
+            <label>{{ books|length }} books shown</label>
+        </div>
+
+        <!-- Search and Filter -->
+        <form class="filters" method="GET" action="/">
+
+            <input
+                type="text"
+                name="q"
+                value="{{ q }}"
+                placeholder="Search title, author or category..."
+            >
+
+            <select name="category">
+                <option value="">All Categories</option>
+
+                {% for category in categories %}
+                    <option value="{{ category }}"
+                        {% if cat == category %}selected{% endif %}>
+                        {{ category }}
+                    </option>
+                {% endfor %}
+
+            </select>
+
+            <button type="submit">Search</button>
+
+            <a href="/" class="reset">Reset</a>
+
+        </form>
+
+        <!-- Display Books -->
+        <section class="grid">
+
+            {% for book in books %}
+
+                <article class="book">
+
+                    <div class="cover c{{ loop.index0 % 5 }}">
+
+                        <small>{{ book.category }}</small>
+
+                        <strong>
+                            {% if loop.index0 % 3 == 0 %}
+                                ✳
+                            {% elif loop.index0 % 3 == 1 %}
+                                ❋
+                            {% else %}
+                                ✦
+                            {% endif %}
+                        </strong>
+
+                        <small>PW · {{ book.book_id }}</small>
+
+                    </div>
+
+                    <div class="details">
+
+                        <small>
+                            {{ book.author }} · {{ book.publication_year }}
+                        </small>
+
+                        <h3>{{ book.title }}</h3>
+
+                        <p>
+                            {{ book.available_copies }}
+                            of
+                            {{ book.total_copies }}
+                            available
+                        </p>
+
+                        <div class="actions">
+
+                            <form method="POST"
+                                  action="{{ url_for('issue', bid=book.book_id) }}">
+
+                                <button type="submit"
+                                    {% if book.available_copies < 1 %}disabled{% endif %}>
+                                    Issue
+                                </button>
+
+                            </form>
+
+                            <form method="POST"
+                                  action="{{ url_for('return_book', bid=book.book_id) }}">
+
+                                <button type="submit" class="pale"
+                                    {% if book.available_copies >= book.total_copies %}disabled{% endif %}>
+                                    Return
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+            {% else %}
+
+                <p>No matching books found. Try another search.</p>
+
+            {% endfor %}
+
+        </section>
+
+        <!-- Add New Book -->
+        <section class="add">
+
+            <div>
+                <p class="eyebrow">GROW YOUR SHELVES</p>
+                <h2>Add a New Book</h2>
+                <p>Make space for another great read.</p>
+            </div>
+
+            <form action="/add" method="POST" class="addform">
+
+                <input
+                    type="text"
+                    name="title"
+                    placeholder="Book Title"
+                    required
+                >
+
+                <input
+                    type="text"
+                    name="author"
+                    placeholder="Author Name"
+                    required
+                >
+
+                <select name="category" required>
+                    <option value="">Choose Category</option>
+
+                    {% for category in categories %}
+                        <option value="{{ category }}">
+                            {{ category }}
+                        </option>
+                    {% endfor %}
+
+                    <option value="Fiction">Fiction</option>
+                    <option value="History">History</option>
+                    <option value="Technical">Technical</option>
+                    <option value="Education">Education</option>
+                    <option value="Self-Study">Self-Study</option>
+                    <option value="Science">Science</option>
+                    <option value="Biography">Biography</option>
+                    <option value="Finance">Finance</option>
+                </select>
+
+                <input
+                    type="number"
+                    name="year"
+                    placeholder="Publication Year"
+                    min="0"
+                    required
+                >
+
+                <input
+                    type="number"
+                    name="copies"
+                    placeholder="Number of Copies"
+                    min="1"
+                    required
+                >
+
+                <button type="submit">+ Add Book</button>
+
+            </form>
+
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            PAGEWISE · SMART LIBRARY TRACKER
+            <span>Built with Python, Pandas & NumPy</span>
+        </footer>
+
+    </main>
+
+</body>
+</html>
