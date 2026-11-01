@@ -19,37 +19,121 @@ st.set_page_config(
 # ---------- DESIGN ----------
 st.markdown("""
 <style>
+
+   
+ 
+# ---------- DESIGN ----------
+st.markdown("""
+<style>
+/* Main background */
 .stApp {
-    background: linear-gradient(130deg,#f4f7ff,#f0faf7);
+    background: linear-gradient(135deg, #f4f7ff 0%, #edf7f5 100%);
+    color: #17233e;
 }
+
+/* Sidebar */
 [data-testid="stSidebar"] {
     background: #101c35;
 }
 [data-testid="stSidebar"] * {
     color: #f4f7ff;
 }
-.hero {
-    padding: 26px;
-    border-radius: 22px;
-    background: linear-gradient(115deg,#14264b,#24677a);
-    color: white;
-    margin-bottom: 20px;
+
+/* Main content text */
+[data-testid="stMain"] {
+    color: #17233e;
 }
-.hero h1 {font-size: 38px;margin:0;}
-.hero p {color:#dbeafe;margin-top:8px;}
-div[data-testid="stMetric"] {
-    background: white;
-    padding: 18px;
-    border-radius: 16px;
-    border: 1px solid #e4eaf3;
-    box-shadow: 0 5px 15px #13294b0a;
+[data-testid="stMain"] h1,
+[data-testid="stMain"] h2,
+[data-testid="stMain"] h3,
+[data-testid="stMain"] h4 {
+    color: #14264b !important;
 }
-.stButton button[kind="primary"] {
-    background: #176b73;
+[data-testid="stMain"] p,
+[data-testid="stMain"] label,
+[data-testid="stMain"] .stMarkdown {
+    color: #334155;
 }
 
-# ---------- DESIGN ----------
-st.markdown("""
+/* Hero banner */
+.hero {
+    padding: 30px;
+    border-radius: 22px;
+    background: linear-gradient(115deg, #14264b, #24677a);
+    color: white;
+    margin-bottom: 22px;
+    box-shadow: 0 10px 30px #14264b16;
+}
+.hero h1 {
+    color: #ffffff !important;
+    font-size: 38px;
+    font-weight: 750;
+    margin: 0;
+}
+.hero p {
+    color: #dceaf3 !important;
+    margin-top: 8px;
+    font-size: 17px;
+}
+
+/* KPI metric cards */
+[data-testid="stMetric"] {
+    background: #ffffff !important;
+    padding: 20px !important;
+    border-radius: 18px !important;
+    border: 1px solid #dce5f1 !important;
+    box-shadow: 0 8px 25px #14264b0b;
+}
+[data-testid="stMetric"] label,
+[data-testid="stMetricLabel"],
+[data-testid="stMetricLabel"] p {
+    color: #64748b !important;
+}
+[data-testid="stMetricValue"],
+[data-testid="stMetricValue"] div {
+    color: #14264b !important;
+    font-weight: 750 !important;
+}
+
+/* Containers and tables */
+[data-testid="stMain"] [data-testid="stVerticalBlockBorderWrapper"] {
+    border-color: #dce5f1;
+    border-radius: 16px;
+}
+[data-testid="stDataFrame"] {
+    border: 1px solid #dce5f1;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* Buttons */
+.stButton button[kind="primary"],
+.stFormSubmitButton button[kind="primary"] {
+    background: #176b73;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 650;
+}
+.stButton button[kind="primary"]:hover,
+.stFormSubmitButton button[kind="primary"]:hover {
+    background: #12545b;
+    color: white;
+}
+
+/* Inputs */
+[data-testid="stMain"] input,
+[data-testid="stMain"] textarea {
+    color: #17233e !important;
+}
+
+/* Chart and general spacing */
+[data-testid="stMain"] h2 {
+    margin-top: 12px;
+}
+</style>
+""", unsafe_allow_html=True)
+
 <style>
 /* Main background */
 .stApp {
