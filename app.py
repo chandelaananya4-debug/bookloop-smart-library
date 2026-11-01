@@ -327,18 +327,138 @@ elif page == "Book Discovery":
         "Explore the collection with smart search."
     )
 
+    term =
+    # ---------- SMART DISCOVERY ----------
+    # Search input
     term = st.text_input(
-        "🔎 Search",
-        placeholder="Search title, author, ISBN..."
+        "🔎 Search your next read",
+        placeholder="Search title, author, ISBN...",
+        key="book_search"
     )
 
-    categories = ["All"] + (
-        sorted(books["category"].dropna().unique().tolist())
+    # Curated category suggestions
+    category_suggestions = {
+        "Fiction": [
+            "The Alchemist", "The Kite Runner",
+            "The Midnight Library"
+        ],
+        "Technology": [
+            "Clean Code", "Python Crash Course",
+            "The Pragmatic Programmer"
+        ],
+        "Science": [
+            "Cosmos", "A Brief History of Time", "Sapiens"
+        ],
+        "Fantasy": [
+            "The Hobbit", "The Lord of the Rings",
+            "Harry Potter"
+        ],
+        "Finance": [
+            "The Psychology of Money",
+            "Rich Dad Poor Dad", "The Intelligent Investor"
+        ],
+        "Self-help": [
+            "Atomic Habits", "The Power of Habit", "Deep Work"
+        ],
+    }
+
+    # Categories to display
+    preferred_categories = [
+        "All", "Fiction", "Technology", "Science",
+        "Fantasy", "Finance", "Self-help"
+    ]
+
+    # Keep categories that exist in the current dataset
+    existing_categories = (
+        books["category"].dropna().unique().tolist()
         if not books.empty else []
     )
-    category = st.selectbox("Filter Category", categories)
 
+    category_options = ["All"] + [
+        c for c in preferred_categories[1:]
+        if c in existing_categories
+    ]
+
+    # Also allow other dataset categories
+    category_options += [
+        c for c in sorted(existing_categories)
+        if c not in category_options
+    ]
+
+    # Selected category
+    if "selected_book_category" not in st.session_state:
+        st.session_state.selected_book_category = "All"
+
+    st.markdown("### ✦ Explore by category")
+    st.caption("Choose your reading mood to discover something new.")
+
+    # Category chips
+    chip_cols = st.columns(min(len(category_options), 4))
+
+    for i, cat in enumerate(category_options):
+        with chip_cols[i % len(chip_cols)]:
+            if st.button(
+                ("✦ " if cat == st.session_state.selected_book_category
+                 else "○ ") + cat,
+                key=f"category_chip_{i}",
+                use_container_width=True,
+                type=(
+                    "primary"
+                    if cat == st.session_state.selected_book_category
+                    else "secondary"
+                )
+            ):
+                st.session_state.selected_book_category = cat
+                st.rerun()
+
+    category = st.session_state.selected_book_category
+
+    # Suggestions based on selected category
+    if category != "All":
+        st.markdown("### ✨ Suggested for you")
+        st.caption(f"Popular picks in {category}")
+
+        suggestions = category_suggestions.get(category, [])
+
+        # Only suggest titles that actually exist in the catalog
+        available_titles = (
+            books["title"].fillna("").astype(str).tolist()
+            if not books.empty else []
+        )
+
+        matched_suggestions = [
+            title for title in suggestions
+            if any(title.lower() in t.lower() for t in available_titles)
+        ]
+
+        if matched_suggestions:
+            suggestion_cols = st.columns(
+                min(3, len(matched_suggestions))
+            )
+
+            for i, title in enumerate(matched_suggestions[:3]):
+                with suggestion_cols[i]:
+                    with st.container(border=True):
+                        st.markdown("📘")
+                        st.markdown(f"**{title}**")
+                        if st.button(
+                            "Search this book",
+                            key=f"suggest_{category}_{i}",
+                            use_container_width=True
+                        ):
+                            st.session_state.book_search = title
+                            st.rerun()
+        else:
+            st.info(
+                "No curated suggestions yet for this category. "
+                "Try browsing the books below."
+            )
+
+    # Filter catalog
     result = books.copy()
+
+    if category != "All":
+        result = result[result["category"] == category]
 
     if term:
         mask = result[
@@ -348,24 +468,33 @@ elif page == "Book Discovery":
                 term, case=False, regex=False
             )
         ).any(axis=1)
+
         result = result[mask]
 
-    if category != "All":
-        result = result[result["category"] == category]
-
+    st.markdown("---")
+    st.markdown("### 📚 Discover books")
     st.caption(f"{len(result)} matching book(s)")
 
-    for _, b in result.iterrows():
-        with st.container(border=True):
-            a, m, c = st.columns([3, 2, 1])
-            a.subheader("📕 " + b["title"])
-            a.caption("by " + b["author"])
-            m.write("**" + b["category"] + "**")
-            m.caption("ISBN: " + str(b["isbn"] or "N/A"))
-            c.metric(
-                "Available",
-                f"{b['available']}/{b['total']}"
-            )
+    if result.empty:
+        st.info("No books found. Try another category or search.")
+    else:
+        for _, b in result.iterrows():
+            with st.container(border=True):
+                a, m, c = st.columns([3, 2, 1])
+
+                a.subheader("📕 " + b["title"])
+                a.caption("by " + b["author"])
+
+                m.write("**" + b["category"] + "**")
+                m.caption("ISBN: " + str(b["isbn"] or "N/A"))
+
+                c.metric(
+                    "Available",
+                    f"{b['available']}/{b['total']}"
+                )
+
+       
+            
 
 # ---------- BORROW / RETURN ----------
 elif page == "Borrow / Return":
