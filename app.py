@@ -16,233 +16,174 @@ st.set_page_config(
     layout="wide"
 )
 
-# ---------- DESIGN ----------
-st.markdown("""
-<style>
 
-   
  
 # ---------- DESIGN ----------
+
+# ---------- DESIGN ----------
 st.markdown("""
 <style>
-/* Main background */
+
+/* ===== MAIN BACKGROUND ===== */
 .stApp {
-    background: linear-gradient(135deg, #f4f7ff 0%, #edf7f5 100%);
-    color: #17233e;
+    background:
+        radial-gradient(ellipse at 10% 0%, #dcecff 0%, transparent 40%),
+        radial-gradient(ellipse at 90% 15%, #d9f5ed 0%, transparent 35%),
+        #f5f7fb;
+    color: #111827 !important;
 }
 
-/* Sidebar */
-[data-testid="stSidebar"] {
-    background: #101c35;
-}
-[data-testid="stSidebar"] * {
-    color: #f4f7ff;
-}
-
-/* Main content text */
+/* ===== GLOBAL TEXT ===== */
 [data-testid="stMain"] {
-    color: #17233e;
+    color: #111827 !important;
 }
+
 [data-testid="stMain"] h1,
 [data-testid="stMain"] h2,
 [data-testid="stMain"] h3,
-[data-testid="stMain"] h4 {
-    color: #14264b !important;
-}
-[data-testid="stMain"] p,
-[data-testid="stMain"] label,
-[data-testid="stMain"] .stMarkdown {
-    color: #334155;
-}
-
-/* Hero banner */
-.hero {
-    padding: 30px;
-    border-radius: 22px;
-    background: linear-gradient(115deg, #14264b, #24677a);
-    color: white;
-    margin-bottom: 22px;
-    box-shadow: 0 10px 30px #14264b16;
-}
-.hero h1 {
-    color: #ffffff !important;
-    font-size: 38px;
-    font-weight: 750;
-    margin: 0;
-}
-.hero p {
-    color: #dceaf3 !important;
-    margin-top: 8px;
-    font-size: 17px;
-}
-
-/* KPI metric cards */
-[data-testid="stMetric"] {
-    background: #ffffff !important;
-    padding: 20px !important;
-    border-radius: 18px !important;
-    border: 1px solid #dce5f1 !important;
-    box-shadow: 0 8px 25px #14264b0b;
-}
-[data-testid="stMetric"] label,
-[data-testid="stMetricLabel"],
-[data-testid="stMetricLabel"] p {
-    color: #64748b !important;
-}
-[data-testid="stMetricValue"],
-[data-testid="stMetricValue"] div {
-    color: #14264b !important;
+[data-testid="stMain"] h4,
+[data-testid="stMain"] h5 {
+    color: #111827 !important;
     font-weight: 750 !important;
 }
 
-/* Containers and tables */
-[data-testid="stMain"] [data-testid="stVerticalBlockBorderWrapper"] {
-    border-color: #dce5f1;
-    border-radius: 16px;
+[data-testid="stMain"] .stMarkdown,
+[data-testid="stMain"] .stMarkdown p,
+[data-testid="stMain"] label,
+[data-testid="stMain"] [data-testid="stCaptionContainer"] p {
+    color: #374151 !important;
 }
-[data-testid="stDataFrame"] {
-    border: 1px solid #dce5f1;
-    border-radius: 12px;
+
+/* ===== HERO BANNER ===== */
+.hero {
+    position: relative;
     overflow: hidden;
+    padding: 38px 34px;
+    border-radius: 24px;
+    background: linear-gradient(120deg, #101a32, #183e52 65%, #176b73);
+    border: 1px solid #34576b;
+    box-shadow: 0 15px 40px rgba(15, 35, 60, 0.15);
+    margin-bottom: 24px;
 }
 
-/* Buttons */
-.stButton button[kind="primary"],
-.stFormSubmitButton button[kind="primary"] {
-    background: #176b73;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-weight: 650;
-}
-.stButton button[kind="primary"]:hover,
-.stFormSubmitButton button[kind="primary"]:hover {
-    background: #12545b;
-    color: white;
+.hero h1 {
+    color: #ffffff !important;
+    font-size: 40px;
+    font-weight: 800;
+    letter-spacing: -1.2px;
+    margin: 0;
 }
 
-/* Inputs */
-[data-testid="stMain"] input,
-[data-testid="stMain"] textarea {
+.hero p {
+    color: #d9e8f2 !important;
+    font-size: 17px;
+    margin-top: 12px;
+}
+
+/* ===== KPI CARDS ===== */
+[data-testid="stMetric"] {
+    background: rgba(255,255,255,0.96) !important;
+    border: 1px solid #dce4ef !important;
+    border-bottom: 4px solid #177e89 !important;
+    border-radius: 18px !important;
+    padding: 22px 20px !important;
+    box-shadow: 0 8px 26px rgba(20, 40, 75, 0.07);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Metric labels */
+[data-testid="stMetricLabel"],
+[data-testid="stMetricLabel"] *,
+[data-testid="stMetric"] label {
+    color: #4b5563 !important;
+    font-size: 14px !important;
+    font-weight: 650 !important;
+}
+
+/* Metric numbers */
+[data-testid="stMetricValue"],
+[data-testid="stMetricValue"] *,
+[data-testid="stMetricDelta"] {
+    color: #111827 !important;
+    font-weight: 800 !important;
+}
+
+/* ===== SECTION HEADINGS ===== */
+[data-testid="stMain"] h2 {
+    color: #111827 !important;
+    font-size: 25px !important;
+    letter-spacing: -0.5px;
+}
+
+[data-testid="stMain"] h3 {
     color: #17233e !important;
 }
 
-/* Chart and general spacing */
-[data-testid="stMain"] h2 {
-    margin-top: 12px;
-}
-</style>
-""", unsafe_allow_html=True)
-
-<style>
-/* Main background */
-.stApp {
-    background: linear-gradient(135deg, #f4f7ff 0%, #edf7f5 100%);
-    color: #17233e;
+/* ===== TABLES ===== */
+[data-testid="stDataFrame"] {
+    border: 1px solid #dce4ef;
+    border-radius: 14px;
+    overflow: hidden;
 }
 
-/* Sidebar */
+/* ===== BUTTONS ===== */
+.stButton button,
+.stFormSubmitButton button {
+    border-radius: 11px !important;
+    font-weight: 700 !important;
+    transition: all 0.2s ease;
+}
+
+.stButton button[kind="primary"],
+.stFormSubmitButton button[kind="primary"] {
+    background: #176b73 !important;
+    color: #ffffff !important;
+    border: 1px solid #176b73 !important;
+}
+
+.stButton button[kind="primary"]:hover,
+.stFormSubmitButton button[kind="primary"]:hover {
+    background: #10535b !important;
+    border-color: #10535b !important;
+}
+
+/* ===== INPUTS ===== */
+[data-testid="stMain"] input,
+[data-testid="stMain"] textarea {
+    color: #111827 !important;
+    background-color: #ffffff !important;
+}
+
+/* ===== SIDEBAR ===== */
 [data-testid="stSidebar"] {
-    background: #101c35;
+    background: #101a32 !important;
 }
+
 [data-testid="stSidebar"] * {
-    color: #f4f7ff;
+    color: #f3f6fc !important;
 }
 
-/* Main content text */
-[data-testid="stMain"] {
-    color: #17233e;
-}
-[data-testid="stMain"] h1,
-[data-testid="stMain"] h2,
-[data-testid="stMain"] h3,
-[data-testid="stMain"] h4 {
-    color: #14264b !important;
-}
-[data-testid="stMain"] p,
-[data-testid="stMain"] label,
-[data-testid="stMain"] .stMarkdown {
-    color: #334155;
-}
-
-/* Hero banner */
-.hero {
-    padding: 30px;
-    border-radius: 22px;
-    background: linear-gradient(115deg, #14264b, #24677a);
-    color: white;
-    margin-bottom: 22px;
-    box-shadow: 0 10px 30px #14264b16;
-}
-.hero h1 {
-    color: #ffffff !important;
-    font-size: 38px;
-    font-weight: 750;
-    margin: 0;
-}
-.hero p {
-    color: #dceaf3 !important;
-    margin-top: 8px;
-    font-size: 17px;
-}
-
-/* KPI metric cards */
-[data-testid="stMetric"] {
-    background: #ffffff !important;
-    padding: 20px !important;
-    border-radius: 18px !important;
-    border: 1px solid #dce5f1 !important;
-    box-shadow: 0 8px 25px #14264b0b;
-}
-[data-testid="stMetric"] label,
-[data-testid="stMetricLabel"],
-[data-testid="stMetricLabel"] p {
-    color: #64748b !important;
-}
-[data-testid="stMetricValue"],
-[data-testid="stMetricValue"] div {
-    color: #14264b !important;
-    font-weight: 750 !important;
-}
-
-/* Containers and tables */
-[data-testid="stMain"] [data-testid="stVerticalBlockBorderWrapper"] {
-    border-color: #dce5f1;
-    border-radius: 16px;
-}
-[data-testid="stDataFrame"] {
-    border: 1px solid #dce5f1;
-    border-radius: 12px;
-    overflow: hidden;
-}
-
-/* Buttons */
-.stButton button[kind="primary"],
-.stFormSubmitButton button[kind="primary"] {
-    background: #176b73;
-    color: white;
-    border: none;
+[data-testid="stSidebar"] [aria-current="page"] {
+    background-color: #1d4052 !important;
     border-radius: 10px;
-    font-weight: 650;
-}
-.stButton button[kind="primary"]:hover,
-.stFormSubmitButton button[kind="primary"]:hover {
-    background: #12545b;
-    color: white;
 }
 
-/* Inputs */
-[data-testid="stMain"] input,
-[data-testid="stMain"] textarea {
-    color: #17233e !important;
+/* ===== ALERTS ===== */
+[data-testid="stAlert"] p {
+    font-weight: 500;
 }
 
-/* Chart and general spacing */
-[data-testid="stMain"] h2 {
-    margin-top: 12px;
+/* ===== RESPONSIVE SPACING ===== */
+@media (max-width: 768px) {
+    .hero {
+        padding: 24px 20px;
+        border-radius: 18px;
+    }
+
+    .hero h1 {
+        font-size: 29px;
+    }
 }
-</style>
-""", unsafe_allow_html=True)
 
 </style>
 """, unsafe_allow_html=True)
